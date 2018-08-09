@@ -1,23 +1,45 @@
 # encoding: UTF-8
+# === boot ===
+
 begin
-  require 'bundler/setup'
-  require 'appraisal'
+  require "bundler/setup"
 rescue LoadError
   puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
 end
-Bundler::GemHelper.install_tasks
 
-require 'rake/testtask'
+# === application ===
 
-desc 'Default: run unit tests.'
-task :default => :test
+require "rails"
+require "combustion"
+# require "active_record/railtie"
 
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.libs << 'test'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = true
+# Bundler.require :default, Rails.env
+
+# === Rakefile ===
+
+task :environment do
+  Combustion::Application.path = 'spec/support/rails'
+  Combustion::Application.initialize!
+
+  # # Reset migrations paths so we can keep the migrations in the project root,
+  # # not the Rails root
+  # migrations_paths = ["db/migrate"]
+  # ActiveRecord::Tasks::DatabaseTasks.migrations_paths = migrations_paths
+  # ActiveRecord::Migrator.migrations_paths = migrations_paths
 end
+
+require "rspec/core/rake_task"
+
+Combustion::Application.load_tasks
+
+task(:default).clear
+task(:spec).clear
+
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.verbose = false
+end
+
+task default: [:spec]
 
 
 #############################################################################
@@ -67,13 +89,13 @@ namespace :changeling do
       puts "You must be on the master branch to bump the version!"
       exit!
     end
-    
+
     # Thanks, Jeweler!
     if BitmaskAttributes::VERSION  =~ /^(\d+)\.(\d+)\.(\d+)(?:\.(.*?))?$/
       major = $1.to_i
       minor = $2.to_i
       patch = $3.to_i
-      
+
       if $4 =~ /([a-z]+)(\d+)?/i
         pre_name    = $1
         pre_version = ($2 || 0).to_i
@@ -81,7 +103,7 @@ namespace :changeling do
     else
       abort
     end
-    
+
     case args[:part]
     when /minor/
       minor += 1
@@ -112,7 +134,7 @@ EOF
       puts "You must be on the master branch to update changelog!"
       exit!
     end
-    
+
     load "lib/#{name}/version.rb"
     file    = "CHANGELOG.rdoc"
     old     = File.read(file)
@@ -148,7 +170,7 @@ EOF
     Rake::Task['changeling:bump'].invoke(t.name)
     Rake::Task['changeling:change'].invoke
   end
-  
+
   desc "Bump by a pre-release version, (1.0.0.pre1 => 1.0.0.pre2)"
   task :pre do |t|
     Rake::Task['changeling:bump'].invoke(t.name)
