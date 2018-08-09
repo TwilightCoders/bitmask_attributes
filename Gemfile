@@ -1,9 +1,16 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 gemspec
 
-gem 'sdoc'
-gem 'rake'
-gem 'shoulda'
-gem 'sqlite3', '>=1.3.5'
-gem 'turn'
+group :test do
+
+  # Generates coverage stats of specs
+  gem 'simplecov'
+
+  gem 'rspec'
+
+  gem 'database_cleaner'
+
+  gem 'combustion'
+
+end

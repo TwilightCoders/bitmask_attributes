@@ -1,0 +1,2 @@
+class SubCampaignWithoutNull < CampaignWithNull
+end

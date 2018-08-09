@@ -11,3 +11,4 @@ pkg
 *.gem
 /nbproject
 .idea/
+bitmask_attributes-test

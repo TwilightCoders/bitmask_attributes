@@ -2,19 +2,26 @@
 $:.push File.expand_path("../lib", __FILE__)
 require "bitmask_attributes/version"
 
-Gem::Specification.new do |gem|
-  gem.name          = "bitmask_attributes"
-  gem.summary       = %Q{Simple bitmask attribute support for ActiveRecord}
-  gem.email         = "joel@developwithstyle.com"
-  gem.homepage      = "http://github.com/joelmoss/bitmask_attributes"
-  gem.authors       = ['Joel Moss']
+Gem::Specification.new do |spec|
+  spec.name          = "bitmask_attributes"
+  spec.summary       = %Q{Simple bitmask attribute support for ActiveRecord}
+  spec.email         = "joel@developwithstyle.com"
+  spec.homepage      = "http://github.com/joelmoss/bitmask_attributes"
+  spec.authors       = ['Joel Moss']
 
-  gem.files         = `git ls-files`.split("\n")
-  gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  gem.require_paths = ['lib']
-  gem.version       = BitmaskAttributes::VERSION.dup
+  spec.files         = `git ls-files`.split("\n")
+  spec.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  spec.require_paths = ['lib']
+  spec.version       = BitmaskAttributes::VERSION.dup
 
-  gem.add_dependency 'activerecord', '>= 3.2'
-  gem.add_development_dependency "appraisal"
-  gem.add_development_dependency "test-unit"
+  rails_versions = ['>= 4.1', '< 6']
+  spec.required_ruby_version = '>= 2.1'
+
+  spec.add_runtime_dependency 'activerecord', rails_versions
+
+  spec.add_development_dependency "sqlite3"
+  spec.add_development_dependency 'pry-byebug', '~> 3'
+  spec.add_development_dependency 'bundler', '~> 1.3'
+  spec.add_development_dependency 'rake', '~> 12.0'
+  spec.add_development_dependency 'combustion', '~> 0.7'
 end
